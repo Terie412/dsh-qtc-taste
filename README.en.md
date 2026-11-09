@@ -1,50 +1,150 @@
 # dsh-qtc-taste
 
-A personal toolkit for DeepSeek Harness. **One plugin, several features**, each with its own page in Settings.
+Adds a **Personalization** page to DeepSeek Harness: write your own standing instructions once, and the model follows them in every conversation.
 
-| Feature | Settings page | What it does |
-|---|---|---|
-| Personal prompt | Personalization | Your own preference blocks, injected into the system prompt of every model request |
+For example:
 
-## Feature: personal prompt
+- Lead with the conclusion, then explain in clear paragraphs
+- Skip jargon; match the depth to what I already know
+- Make reasonable decisions yourself; finish long tasks in one go
+- Don't over-invest in simple tasks
 
-Write your own preferences into the system prompt.
+Write it once and every new session picks it up. No repeating yourself.
 
-- One master switch plus any number of preference blocks; each can be enabled, reordered, edited, and deleted on its own
-- **Takes effect immediately**: the injected text is resolved at every assembly, so a saved edit applies to the next message without a restart
-- **Verbatim injection**: your text is inserted literally. `{{ }}` is not treated as a prompt variable, so code snippets and templates cannot break assembly
-- Lands at `order: 9800` — after tool guidance, before the deployment persona suffix (10200)
+---
 
-Stored at `<DSH_HOME>/storages/dsh-qtc-taste/taste.json`.
+## What you get
 
-## Architecture
+One master switch plus any number of entries. Each entry can be enabled, disabled, reordered, edited, and deleted on its own.
+
+- **Applies immediately** — save an edit and your next message already follows it; no restart
+- **Verbatim** — whatever you write is what gets used. Code snippets and templates with braces are safe
+- **Draft-friendly** — leave an unfinished entry switched off; the text is kept
+
+---
+
+## How to use it
+
+### 1. Open Settings
+
+Open **Settings** (the gear in the bottom-left). A new **Personalization** item appears in the left column.
+
+### 2. Add an entry
+
+Click **Add block** and fill in two fields:
+
+| Field | What goes there |
+|---|---|
+| Title | What the entry is about, e.g. "Response style" or "About me". For your eyes only. |
+| Body | The actual requirement. Multi-line, any structure. |
+
+### 3. Apply it
+
+Click **Save**.
+
+The buttons work like this:
+
+- **Save** — only clickable when something changed; shows "Saved" when done
+- **Revert** — undo everything back to the last save
+- **Unsaved changes** — appears while you have edits that aren't written yet
+- **Master switch** ("Inject personal preferences") — pauses everything at once; the text is kept
+
+### 4. Check it worked
+
+Send any message and ask "what personal preferences are you following right now?" If it repeats your text back, it's live.
+
+### 5. Adjust
+
+- Try one entry at a time: switch the others off
+- Reorder: the up/down arrows on each row
+- Remove: the trash icon, with a confirmation first
+
+> **Note**: adding, editing, and deleting all happen on the page first — nothing is written until you click **Save**. Close Settings without saving and the changes are gone. If you can see the "Unsaved changes" tag, it isn't written yet.
+
+---
+
+## Install
+
+### Option 1: from the Harness UI (recommended)
+
+1. Open **Settings → Plugins**
+2. Click **Add plugin** in the top right
+3. Paste this and confirm:
 
 ```
-index.js                      composition: the FEATURES list, each register() called
-src/host/storage.js           shared: document I/O (atomic writes), routes, Connection fence
-src/host/features/
-  personalization.js          feature: prompt section + its own route
-client.js                     one settings page per feature + the shared controls
+git+ssh://git@github.com/Terie412/dsh-qtc-taste.git
 ```
 
-**Adding a feature is local work**: write a feature module, add one line to `FEATURES`, add one line to the Client's `PAGES`. No existing feature changes, and the profile's plugin count does not grow with the feature count.
+The plugin appears in the list as **Personal prompt**, and a **Personalization** page shows up in Settings.
 
-Each feature owns:
-
-- its own document (`storage.js` provides atomic writes and pure reads — a read during assembly never touches files)
-- its own route (`registerFeatureRoute` standardizes the `{ ok, value }` envelope; method names never cross features, and another feature's method answers 404)
-- its own contribution point
-
-A feature that fails to register only logs; the rest of the toolkit stays online.
-
-## Test
+### Option 2: command line
 
 ```
-node test/host.mjs
+dsh plugin add "git+ssh://git@github.com/Terie412/dsh-qtc-taste.git"
 ```
 
-Runs the real `index.js` and every feature module against a fabricated Cordis context: 42 checks covering section registration and order, document I/O and corruption recovery, limit truncation, route isolation, and the storage helpers.
+### Installed but nothing shows up?
 
-## Considered and withdrawn
+- Check that **Personal prompt** is switched on in the plugin list
+- Quit Harness completely and reopen it
+- The page lives in **Settings → Personalization**, not inside the Plugins page
 
-An "image anchors" feature — teaching the model which picture "图1" means — was removed in v0.3.0. It only reordered **the message the model receives** (`agent/pre-step`); the composer and the message bubble looked exactly the same. The expected result was images inlined into the text, which lives in `ui-conversation` and needs forking a shipped package. Waiting for upstream support.
+### Uninstall
+
+Settings → Plugins → **Personal prompt** → uninstall.
+
+Your entries stay on disk and come back if you reinstall.
+
+---
+
+## Details
+
+### Where the text is stored
+
+```
+<DSH_HOME>/storages/dsh-qtc-taste/taste.json
+```
+
+On Windows that is usually `C:\Users\<you>\.dsh\storages\dsh-qtc-taste\taste.json`.
+
+The page footer shows the real path so you can copy it.
+
+- To back up, copy that file
+- To move machines, copy it to the same place
+- To edit by hand, edit the JSON directly — the next message picks it up
+
+### Limits
+
+Up to 50 entries, 20000 characters each, 120000 in total. The footer counts as you type; a save that exceeds the total is refused with a message.
+
+Realistically you will never approach this.
+
+### Where it lands
+
+In the system prompt — the part the model reads every turn — not in your message.
+
+It sits after tool guidance and before the persona suffix, so your preferences outrank general style guidance but **cannot override hard rules** such as how a tool actually behaves, or the facts of the task.
+
+### One tip
+
+Write **concrete and actionable**, not abstract adjectives.
+
+- Good: "Lead with the conclusion, then explain in up to three points, two sentences each"
+- Weak: "Be professional, clear, and organized"
+
+Models follow specific instructions far more reliably than adjectives.
+
+---
+
+## What it does not do
+
+- **Doesn't touch your chat history** — injection changes what the model reads, not what you see
+- **Doesn't edit your config** — it only reads and writes its own JSON file, never Harness's own configuration files
+- **No network access** — fully local
+- **No telemetry** — nothing is collected or reported
+
+---
+
+## Feedback
+
+Questions or feature requests: [Issues](https://github.com/Terie412/dsh-qtc-taste/issues).
