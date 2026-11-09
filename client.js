@@ -251,8 +251,14 @@ window.__ModuleLoader__.load({
 
     // ── Feature icon ───────────────────────────────────────────────────────
     /**
-     * The 个性化 navigation glyph: two rails with offset knobs — the classic
-     * "preferences" read, drawn to the host's 16-unit stroke contract.
+     * The 个性化 navigation glyph: a smiley star with a spark, drawn to the
+     * host's 16-unit stroke contract (no fill, `currentColor`, 1.3 stroke,
+     * round joins) so it sits level with the built-in settings rows.
+     *
+     * The composition is normalized so its ink — stroke included — spans about
+     * 10.4 of the 16 units, which is the footprint the shipped settings icons
+     * occupy; that is what keeps the visual weight consistent rather than the
+     * nominal box size.
      * @param props - `{ size }` from the settings nav row.
      * @returns the inline SVG.
      */
@@ -271,12 +277,17 @@ window.__ModuleLoader__.load({
         'aria-hidden': true,
         style: { display: 'block', flex: 'none' },
       },
-      h('path', { d: 'M2 4.6h12' }),
-      h('path', { d: 'M2 11.4h12' }),
-      h('circle', { cx: 5.6, cy: 4.6, r: 1.7 }),
-      h('circle', { cx: 10.4, cy: 11.4, r: 1.7 }),
-      h('path', { d: 'M10.4 4.6h3.6' }),
-      h('path', { d: 'M2 11.4h1.9' }),
+      // Rounded five-point star.
+      h('path', {
+        d: 'M7.48 4.32 L8.26 5.89 Q8.51 6.38 9.05 6.46 L10.78 6.72 Q11.21 6.79 10.9 7.09 L9.65 8.32 Q9.27 8.71 9.35 9.25 L9.64 10.97 Q9.71 11.41 9.32 11.2 L7.77 10.4 Q7.28 10.15 6.8 10.4 L5.24 11.2 Q4.85 11.41 4.92 10.97 L5.21 9.25 Q5.3 8.71 4.91 8.32 L3.66 7.09 Q3.35 6.79 3.79 6.72 L5.51 6.46 Q6.06 6.38 6.3 5.89 L7.09 4.32 Q7.28 3.93 7.48 4.32Z',
+      }),
+      // Two eyes, the right one higher, so the face reads as a wink.
+      h('path', { d: 'M6.41 7.64h0' }),
+      h('path', { d: 'M7.72 7.28h0' }),
+      // Smile.
+      h('path', { d: 'M6.58 8.37a1.11 1.11 0 0 0 1.84 0.2' }),
+      // Spark, outside the star at the lower right.
+      h('path', { d: 'M11.5 10.92L12.65 12.07' }),
       )
     }
 
