@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Personalization">
+  <defs>
+    <linearGradient id="qtt-bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7a5cf0"/>
+      <stop offset="1" stop-color="#3b2a9e"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#qtt-bg)"/>
+  <g fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 24h34"/>
+    <path d="M15 40h34"/>
+    <circle cx="26" cy="24" r="5" fill="#ffffff" stroke="none"/>
+    <circle cx="39" cy="40" r="5" fill="#ffffff" stroke="none"/>
+  </g>
+</svg>

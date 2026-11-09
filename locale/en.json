@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Personal prompt",
+    "description": "Maintain your own system-prompt blocks under Settings → Personalization; enabled blocks are injected into every model request.",
+    "detail": "README.en.md"
+  }
+}
