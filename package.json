@@ -1,8 +1,8 @@
 {
   "name": "dsh-qtc-taste",
-  "version": "0.3.0",
+  "version": "0.7.0",
   "private": true,
-  "description": "A personal quality-of-life toolkit for DeepSeek Harness: maintain your own system-prompt blocks in Settings → Personalization and have them injected into every model request.",
+  "description": "A personal quality-of-life toolkit for DeepSeek Harness: prompt blocks in Settings → Personalization, and a live performance panel in the sidebar.",
   "type": "module",
   "icon": "./icon.svg",
   "exports": {
@@ -22,7 +22,7 @@
     "README.en.md"
   ],
   "scripts": {
-    "test": "node test/host.mjs"
+    "test": "node test/host.mjs && node test/client.mjs"
   },
   "keywords": [
     "deepseek-harness",
@@ -31,6 +31,8 @@
     "plugin",
     "system-prompt",
     "personalization",
+    "performance",
+    "monitor",
     "settings",
     "ui"
   ],

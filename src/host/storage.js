@@ -28,7 +28,7 @@ const BODY_LIMIT = 1 << 20
  * The DSH home directory owning `storages/`.
  * @returns the absolute home path.
  */
-function resolveHome () {
+export function resolveHome () {
   const fromEnv = process.env.DSH_HOME
   if (typeof fromEnv === 'string' && fromEnv.trim() !== '') return fromEnv
   return join(homedir(), '.dsh')
