@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Personal prompt & performance",
+    "title": "dsh-qtc-taste",
     "description": "Maintain your own system-prompt blocks under Settings → Personalization, injected into every model request; plus a performance panel with live CPU, memory, storage and event-loop figures in either sidebar.",
     "detail": "README.en.md"
   }
